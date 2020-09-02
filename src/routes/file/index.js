@@ -28,8 +28,15 @@ const multerOptions = multer({
 })
 
 router.post("/uploadWithMulter", multerOptions.single("file"),   async (req, res)=>{
-
     res.send(req.file.url)
 })
+
+router.delete("/:containerName/:fileName", async (req, res)=>{
+    const container = await blobClient.getContainerClient(req.params.containerName)
+    await container.deleteBlob(req.params.fileName)
+
+    res.send("ok")
+})
+
 
 module.exports =router
