@@ -15,8 +15,21 @@ router.get("/:container", async(req,res)=> {
     const toReturn = []
     for await (const file of files)
         toReturn.push(await container.getBlobClient(file.name).url)
-
     res.send(toReturn)
 
 })
+
+const multerOptions = multer({
+    storage: new MulterAzureStorage({
+        azureStorageConnectionString: process.env.STORAGE_CS,
+        containerName: 'videos',
+        containerSecurity: 'container'
+    })
+})
+
+router.post("/uploadWithMulter", multerOptions.single("file"),   async (req, res)=>{
+
+    res.send(req.file.url)
+})
+
 module.exports =router
